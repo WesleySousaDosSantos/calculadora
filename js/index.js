@@ -1,56 +1,65 @@
-class Sorteio {
+class Produto {
     constructor() {
-        this.listaDeNomes = [];
+        this.listaDeProdutos = [];
+        this.listaDeValores = [];
     }
 
     incluir() {
-        let cpNome = document.getElementById('nome');
-        if (cpNome.value != '') {
-            this.listaDeNomes.push(cpNome.value);
-            let nomesStr = this.listaDeNomes.join(';');
-            localStorage.listaDeNomes = nomesStr;
-            cpNome.value = '';
-            this.exibir()
+        let produtoInput = document.getElementById('produtos').value;
+        let valorInput = document.getElementById('valor').value;
+
+        if (produtoInput !== '' && valorInput !== '') {
+            this.listaDeProdutos.push(produtoInput);
+            this.listaDeValores.push(parseFloat(valorInput));
+
+            this.exibir();
         }
     }
 
     exibir() {
-        let lista = document.getElementById('listaDeNomes');
-        lista.innerHTML = '';
-        for(let i = 0; i < this.listaDeNomes.length; i++) {
-            let item = document.createElement('li');
-            item.innerHTML = this.listaDeNomes[i]
-            lista.appendChild(item)
+        let listaProdutos = document.getElementById('listaDeProdutos');
+        let listaValores = document.getElementById('listaDeValores');
+        listaProdutos.innerHTML = '';
+        listaValores.innerHTML = '';
+
+        for (let i = 0; i < this.listaDeProdutos.length; i++) {
+            let produtoItem = document.createElement('li');
+            let valorItem = document.createElement('li');
+            let deleteButton = document.createElement('button');
+
+            produtoItem.textContent = this.listaDeProdutos[i];
+            valorItem.textContent = this.listaDeValores[i].toFixed(2);
+            deleteButton.textContent = 'Deletar';
+
+            deleteButton.addEventListener('click', () => {
+                this.listaDeProdutos.splice(i, 1);
+                this.listaDeValores.splice(i, 1);
+                this.exibir();
+            });
+
+            listaProdutos.appendChild(produtoItem);
+            valorItem.appendChild(deleteButton);
+            listaValores.appendChild(valorItem);
         }
     }
 
-    recuperaLista() {
-        let listaStr = localStorage.listaDeNomes;
-        if (listaStr != 'undefined') {
-            this.listaDeNomes = listaStr.splice('-');
-        }
-        this.exibir();
-    }
+    calcular() {
+        let total = this.listaDeValores.reduce((acc, curr) => acc + curr, 0);
+        let media = total / this.listaDeValores.length;
 
-    apagaLista() {
-        localStorage.clear()
-        location.reload()
-    }
-
-    sortear() {
-        let min = 0
-        let max = this.listaDeNomes.length
-        let numeroSorteado = Math.floor(Math.random() * (max - min) + min)
-
-        let nomeSorteado = this.listaDeNomes[numeroSorteado];
-        let ganhador = document.getElementById('ganhador');
-        ganhador.innerHTML = nomeSorteado
+        document.getElementById('total').textContent = total.toFixed(2);
+        document.getElementById('media').textContent = media.toFixed(2);
     }
 }
 
-let s = new Sorteio();
+let s = new Produto();
 
 window.onload = () => {
-    s.recuperaLista();
-}
-console.log(s.listaDeNomes)
+    document.getElementById('btnInserir').addEventListener('click', () => {
+        s.incluir();
+    });
+
+    document.getElementById('btnCalcular').addEventListener('click', () => {
+        s.calcular();
+    });
+};

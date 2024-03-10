@@ -49,6 +49,22 @@ class Produto {
 
         document.getElementById('total').textContent = total.toFixed(2);
         document.getElementById('media').textContent = media.toFixed(2);
+
+        this.mostrarProdutoMaisCaro();
+    }
+
+    limparLista() {
+        this.listaDeProdutos = [];
+        this.listaDeValores = [];
+        this.exibir();
+    }
+
+    mostrarProdutoMaisCaro() {
+        if (this.listaDeProdutos.length > 0) {
+            let maxIndex = this.listaDeValores.indexOf(Math.max(...this.listaDeValores));
+            let produtoMaisCaro = this.listaDeProdutos[maxIndex];
+            alert("O produto mais caro é: " + produtoMaisCaro);
+        }
     }
 }
 
@@ -61,5 +77,9 @@ window.onload = () => {
 
     document.getElementById('btnCalcular').addEventListener('click', () => {
         s.calcular();
+    });
+
+    document.getElementById('btnLimparLista').addEventListener('click', () => {
+        s.limparLista();
     });
 };
